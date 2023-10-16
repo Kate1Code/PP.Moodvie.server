@@ -24,14 +24,13 @@ exports.up = function (knex) {
         .unsigned()
         .notNullable()
         .references('id')
-        .inTable('user_movie_relationships') // Reference the user_movie_relationships table
+        .inTable('user_movie_relationships')
         .onDelete('CASCADE');
       table.string('movie_title').notNullable();
-      table.enum('user_1_action', ['yes', 'maybe']).notNullable(); // User 1's action
-      table.enum('user_2_action', ['yes', 'maybe']).notNullable(); // User 2's action
+      table.enum('user_1_action', ['yes', 'maybe']).notNullable();
+      table.enum('user_2_action', ['yes', 'maybe']).notNullable(); 
       table.timestamp('created_at').defaultTo(knex.fn.now());
   
-      // Add a unique constraint to ensure each match is unique based on user IDs and movie ID
       table.unique(['user_id_1', 'user_id_2', 'movie_id']);
     });
   };

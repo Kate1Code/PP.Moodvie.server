@@ -1,33 +1,35 @@
 const express = require('express');
 const app = express();
+const port = process.env.PORT || 8080;
+
 const cors = require('cors');
-const bodyParser = require('body-parser'); // Add body-parser for JSON parsing
+const bodyParser = require('body-parser');
 require('dotenv').config();
 
-// Use CORS middleware to handle cross-origin requests
+
 app.use(cors({
-  origin: 'http://localhost:3000', // Replace with your frontend's actual URL
+  origin: 'http://localhost:3000',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 }));
 
-// Add body-parser middleware for JSON parsing
 app.use(bodyParser.json());
 
-// Define a sample route (You can remove this if not needed)
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
+app.use((err, req, res, next) => {
+  console.error('Error:', err.stack);
+  res.status(500).json({ error: 'Something went wrong' });
 });
 
-// Mount your movie routes
 const movieRoutes = require('./routes/movieRoutes');
+const registerRouter = require("./routes/registerRouter");
+const loginRouter = require("./routes/loginRouter");
+const profileRouter = require("./routes/profileRouter");
+
 app.use('/movies', movieRoutes);
-
-const registerRouter = require("./routes/userRegistrationRoutes");
 app.use('/register', registerRouter);
+app.use('/login', loginRouter);
+app.use('/profile', profileRouter);
 
-// Start the Express server
-const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
